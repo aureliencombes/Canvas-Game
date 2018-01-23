@@ -112,7 +112,7 @@ const sprite = (options) =>
     {
         				
         // Clear the canvas
-        context.clearRect(moveX, moveY, this.width, this.height);
+        context.clearRect(0, 0, canvas.width, canvas.height)
 
         // Draw the animation
         this.context.drawImage
@@ -125,19 +125,29 @@ const sprite = (options) =>
            dx = moveX,
            dy = moveY,
            dw = this.width / numberOfFrames,
-           dh = this.height)
-           
+           dh = this.height
+        ) 
+        
+        // Draw the shadow
+        context.beginPath()
+        context.lineWidth="1"
+        context.fillStyle = 'rgba(0, 0, 0, 0.24)'
+        context.moveTo(moveX, moveY+123)
+        context.ellipse(moveX+60, moveY+123, 5, 30, 90 * Math.PI/180, 0, 2 * Math.PI)
+        context.fill()
+
+        // Draw the horizontal line
+        context.beginPath()
+        context.moveTo(0,moveY+80)
+        context.fillStyle = 'rgba(0, 0, 0, 1)'
+        context.lineTo(window.innerWidth,moveY+80)
+        context.stroke()
+        context.fill()
     }
 
+    return this   
 
-
-    return this
-           
 }
-
-////////////////
-
-
 
 
 //sprite initialisation
@@ -166,7 +176,7 @@ const move = () =>
             height : 128,
             image : char1Stop,
             numberOfFrames : 7,
-            ticksPerFrame : 1,
+            ticksPerFrame : 2,
         })
     }
     if (moveState == 2)
@@ -208,43 +218,8 @@ const gameLoop = () =>
     player1.update()
     player1.render()
     move()
-    shadow.style.transform = `translateX(${moveX+35}px)`
-    console.log(moveX)
+    
 }
-
-
-
-
-////////////////////////////////////////////////////
-//                    Player                      //
-////////////////////////////////////////////////////
-
-
-// const player1 = sprite({
-//     width : 2688,
-//     height : 128,
-//     image : char1Right,
-//     numberOfFrames : 21,
-//     ticksPerFrame : 1,
-// })
-
-// const player1Left = sprite({
-//     width : 2688,
-//     height : 128,
-//     image : char1Left,
-//     numberOfFrames : 21,
-//     ticksPerFrame : 1,
-
-// })
-
-// const player1Stop = sprite({
-//     width : 896,
-//     height : 128,
-//     image : char1Stop,
-//     numberOfFrames : 7,
-//     ticksPerFrame : 1,
-
-// })
 
 
 
@@ -286,7 +261,6 @@ const gameLoop = () =>
        
     })
 
-    // moveX  =  0.5 + 0.5 * Math.sin((x - 0.5) * Math.PI)
 
     
 
@@ -294,5 +268,4 @@ const gameLoop = () =>
 
 
 // Start the game loop as soon as the sprite sheet is loaded
-// char1.addEventListener("load", gameLoop)
 window.addEventListener('load', gameLoop)
