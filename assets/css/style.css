@@ -13,7 +13,7 @@
     height: 0.5%;
     background: black;
     position: absolute;
-    top: 67%;
+    top: 75%;
 }
 
 
@@ -24,8 +24,8 @@
     border-radius: 50%;
     background: black;
     position: absolute;
-    top: 73.5%;
-    left: 10%;
-    filter: blur(3px);
-    opacity: 0.5;
+    transform-origin: 50% 50%;
+    top: 81%;
+    filter: blur(2px);
+    opacity: 0.3;
 }

@@ -5,6 +5,8 @@
 const canvas = document.querySelector(".canvas")
 const context = canvas.getContext('2d')
 
+const shadow =  document.querySelector('.shadow')
+
 const char1Right = new Image()
 char1Right.src = "assets/img/spriteRight.png"
 const char1Left = new Image()
@@ -16,13 +18,19 @@ char1Stop.src = "assets/img/spriteStop.png"
 //movement 
 let moveState = 0
 
-let moveX = 100
+let moveX = 600
 let moveY = 400
 
 const up = 90
 const right = 68
 const down = 83
 const left = 81
+
+let frameIndex = 0
+let tickCount = 0
+
+
+
 
 
 
@@ -67,8 +75,7 @@ const sprite = (options) =>
     this.image = options.image
 
     //updates options
-    let frameIndex = 0
-    let tickCount = 0
+    
     this.numberOfFrames = options.numberOfFrames || 1
     this.ticksPerFrame = options.ticksPerFrame || 0
 
@@ -79,23 +86,22 @@ const sprite = (options) =>
 
     update = () => 
     {
-        tickCount += 1
+        tickCount++
 			
-        if (tickCount > ticksPerFrame) {
-        
-            tickCount = 0;
+        if (tickCount > ticksPerFrame) 
+        {
+            tickCount = 0
         
             // If the current frame index is in range
             if (frameIndex < numberOfFrames - 1)
             {
 
                 // Go to the next frame
-                frameIndex += 1;
+                frameIndex++
 
-            } 
-            else if (frameIndex = numberOfFrames) 
+            } else if (frameIndex = numberOfFrames)
             {
-                frameIndex = 0;
+                frameIndex = 0
             }   
         }
     }
@@ -146,21 +152,11 @@ const player1 = sprite({
 
 
 
-const gameLoop = () =>
-{
-    window.requestAnimationFrame(gameLoop)
-  
-    player1.update()
-    player1.render()
-    move()
-
-}
 
 
 
 const move = () =>
 {
-    // Stop
     if (moveState == 0)
     {
         console.log('stop')
@@ -171,7 +167,6 @@ const move = () =>
             image : char1Stop,
             numberOfFrames : 7,
             ticksPerFrame : 1,
-        
         })
     }
     if (moveState == 2)
@@ -185,6 +180,7 @@ const move = () =>
             numberOfFrames : 21,
             ticksPerFrame : 1,
         })
+        
     }
     if (moveState == 4)
     {
@@ -205,8 +201,16 @@ const move = () =>
 
 
 
-
-
+const gameLoop = () =>
+{
+    window.requestAnimationFrame(gameLoop)
+  
+    player1.update()
+    player1.render()
+    move()
+    shadow.style.transform = `translateX(${moveX+35}px)`
+    console.log(moveX)
+}
 
 
 
@@ -241,8 +245,6 @@ const move = () =>
 //     ticksPerFrame : 1,
 
 // })
-
-
 
 
 
