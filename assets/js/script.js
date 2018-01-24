@@ -5,8 +5,7 @@
 const canvas = document.querySelector(".canvas")
 const context = canvas.getContext('2d')
 
-const shadow =  document.querySelector('.shadow')
-
+//sprite variables
 const char1Right = new Image()
 char1Right.src = "assets/img/spriteRight.png"
 const char1Left = new Image()
@@ -14,8 +13,10 @@ char1Left.src = "assets/img/spriteLeft.png"
 const char1Stop = new Image()
 char1Stop.src = "assets/img/spriteStop.png"
 
+let frameIndex = 0
+let tickCount = 0
 
-//movement 
+//movement variables
 let moveState = 0
 
 let moveX = 600
@@ -26,8 +27,7 @@ const right = 68
 const down = 83
 const left = 81
 
-let frameIndex = 0
-let tickCount = 0
+let jumpState = false
 
 
 
@@ -63,7 +63,6 @@ resize()
 //                Sprite Gestion                  //
 ////////////////////////////////////////////////////
 
-
 const sprite = (options) => 
 {
 // Variables Declaration
@@ -75,21 +74,20 @@ const sprite = (options) =>
     this.image = options.image
 
     //updates options
-    
     this.numberOfFrames = options.numberOfFrames || 1
     this.ticksPerFrame = options.ticksPerFrame || 0
-
 
 // rendering
 
     //update function
-
     update = () => 
     {
         tickCount++
-			
+        
+        // If the time per frame is reach
         if (tickCount > ticksPerFrame) 
         {
+            // Reset it
             tickCount = 0
         
             // If the current frame index is in range
@@ -99,15 +97,16 @@ const sprite = (options) =>
                 // Go to the next frame
                 frameIndex++
 
+            // If the last frame is reached 
             } else if (frameIndex = numberOfFrames)
             {
+                // Go back to the first one
                 frameIndex = 0
             }   
         }
     }
 
     //render function
-    
     render = () => 
     {
         				
@@ -132,15 +131,15 @@ const sprite = (options) =>
         context.beginPath()
         context.lineWidth="1"
         context.fillStyle = 'rgba(0, 0, 0, 0.24)'
-        context.moveTo(moveX, moveY+123)
-        context.ellipse(moveX+60, moveY+123, 5, 30, 90 * Math.PI/180, 0, 2 * Math.PI)
+        context.moveTo(moveX, 523)
+        context.ellipse(moveX+60, 523, 5, 30, 90 * Math.PI/180, 0, 2 * Math.PI)
         context.fill()
 
         // Draw the horizontal line
         context.beginPath()
-        context.moveTo(0,moveY+80)
+        context.moveTo(0,480)
         context.fillStyle = 'rgba(0, 0, 0, 1)'
-        context.lineTo(window.innerWidth,moveY+80)
+        context.lineTo(window.innerWidth,480)
         context.stroke()
         context.fill()
     }
@@ -157,13 +156,20 @@ const player1 = sprite({
     image : char1Stop,
     numberOfFrames : 7,
     ticksPerFrame : 1,
-
 })
 
 
 
 
 
+
+
+
+
+
+////////////////////////////////////////////////////
+//               MOVEMENT FUNCTION                //
+////////////////////////////////////////////////////
 
 const move = () =>
 {
@@ -179,6 +185,19 @@ const move = () =>
             ticksPerFrame : 2,
         })
     }
+
+    if (moveState == 1)
+    {   
+        const player1 = sprite({
+            width : 896,
+            height : 128,
+            image : char1Stop,
+            numberOfFrames : 7,
+            ticksPerFrame : 2,
+        
+        })
+    }
+
     if (moveState == 2)
     {
         console.log('right')
@@ -189,9 +208,9 @@ const move = () =>
             image : char1Right,
             numberOfFrames : 21,
             ticksPerFrame : 1,
-        })
-        
+        })    
     }
+
     if (moveState == 4)
     {
         console.log('left')
@@ -202,24 +221,57 @@ const move = () =>
             image : char1Left,
             numberOfFrames : 21,
             ticksPerFrame : 1,
-        
         })
     }
 
 }
 
 
+const jump = () => {
+    
+    const endJump = () => {   
+        
+        moveY += 50
+        jumpState = false
+        console.log('end jump')
+    }
+
+
+    if(jumpState == false)
+    {
+        jumpState = true
+        moveY -= 50
+        console.log('jump')
+        setTimeout(endJump,300)
+    }
+
+
+}
+
+
+
+
+
+
+
+////////////////////////////////////////////////////
+//              GAME INITIALISATION               //
+////////////////////////////////////////////////////
 
 
 const gameLoop = () =>
 {
-    window.requestAnimationFrame(gameLoop)
-  
     player1.update()
     player1.render()
     move()
     
+    window.requestAnimationFrame(gameLoop)
 }
+
+
+
+
+
 
 
 
@@ -232,7 +284,7 @@ const gameLoop = () =>
 
     document.addEventListener('keydown', (event) => {
         if (event.keyCode == up){
-            moveState = 1
+            jump()
         }
         if (event.keyCode == right){
             moveState = 2
@@ -246,9 +298,6 @@ const gameLoop = () =>
     })
 
     document.addEventListener('keyup', (event) => {
-        if (event.keyCode == up){
-            moveState = 0
-        }
         if (event.keyCode == right){
             moveState = 0
         }
