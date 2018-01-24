@@ -27,7 +27,7 @@ const right = 68
 const down = 83
 const left = 81
 
-let jumpState = false
+let jumpStep = 0 
 
 
 
@@ -137,11 +137,30 @@ const sprite = (options) =>
 
         // Draw the horizontal line
         context.beginPath()
-        context.moveTo(0,480)
         context.fillStyle = 'rgba(0, 0, 0, 1)'
+        context.moveTo(0,480)
         context.lineTo(window.innerWidth,480)
         context.stroke()
-        context.fill()
+
+        // Draw the box
+        context.beginPath()
+        context.lineWidth="1"
+        context.fillStyle = 'rgba(0, 0, 0, 0.24)'
+        context.moveTo(0, 0)
+        context.rect(800, 425, 100, 20, 90 * Math.PI/180, 0, 2 * Math.PI)
+        
+        // Draw the 3D box
+        context.rect(780, 420, 100, 20, 90 * Math.PI/180, 0, 2 * Math.PI)
+        context.moveTo(780, 420)
+        context.lineTo(800, 425, 100, 20, 90 * Math.PI/180, 0, 2 * Math.PI)
+        context.moveTo(780, 440)
+        context.lineTo(800, 445, 100, 20, 90 * Math.PI/180, 0, 2 * Math.PI)
+        context.moveTo(880, 420)
+        context.lineTo(900, 425, 100, 20, 90 * Math.PI/180, 0, 2 * Math.PI)
+        context.moveTo(880, 440)
+        context.lineTo(900, 445, 100, 20, 90 * Math.PI/180, 0, 2 * Math.PI)
+        
+        context.stroke()
     }
 
     return this   
@@ -228,26 +247,31 @@ const move = () =>
 
 
 const jump = () => {
-    
-    const endJump = () => {   
-        
-        moveY += 50
-        jumpState = false
-        console.log('end jump')
-    }
 
-
-    if(jumpState == false)
+    if(jumpStep == 0)
     {
-        jumpState = true
-        moveY -= 50
-        console.log('jump')
-        setTimeout(endJump,300)
+        jumpStep = 1
+        console.log('jump1')
     }
-
-
 }
 
+const whileJump = () => {
+
+    if(jumpStep == 1)
+    {
+        jumpStep = 2
+        console.log('jump2')
+    }
+}
+
+
+const endJump = () => {   
+        
+    if(jumpStep == 2){
+        jumpStep = 0
+        console.log('end jump3')
+    }
+}
 
 
 
@@ -264,6 +288,20 @@ const gameLoop = () =>
     player1.update()
     player1.render()
     move()
+
+
+    // jump 
+    if(jumpStep == 1)
+    {
+        moveY -= 15
+        setTimeout(whileJump,200)
+    }
+    if(jumpStep == 2)
+    {
+        moveY += 15
+        setTimeout(endJump,200)
+    }
+
     
     window.requestAnimationFrame(gameLoop)
 }
@@ -278,7 +316,7 @@ const gameLoop = () =>
 
 
 ////////////////////////////////////////////////////
-//                    controls                    //
+//                    CONTROLS                    //
 ////////////////////////////////////////////////////
 
 

@@ -1,4 +1,4 @@
 
 #   Test it
 
-https://aureliencombes.github.io/Canvas-Game/
+- *[Demo](https://aureliencombes.github.io/Canvas-Game/)*
